@@ -1,19 +1,3 @@
-// Asset manifest will be loaded dynamically
-
-import Phaser from "phaser";
-
-import Phaser from "phaser";
-
-import Phaser from "phaser";
-
-import Phaser from "phaser";
-
-import Phaser from "phaser";
-
-import Phaser from "phaser";
-
-import Phaser from "phaser";
-
 /**
  * PreloadScene handles loading all game assets with a progress bar
  */
@@ -104,47 +88,91 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   private loadAssets(): void {
-    // Load spritesheets directly
-    this.load.spritesheet('player_idle', 'assets/Character/Idle.png', {
-      frameWidth: 32,
-      frameHeight: 32
-    });
+    // Create placeholder sprites using canvas (no external files needed)
+    this.createPlayerSprites();
+    this.createTilesetSprite();
     
-    this.load.spritesheet('player_walk', 'assets/Character/Walk.png', {
-      frameWidth: 32,
-      frameHeight: 32
-    });
-    
-    this.load.spritesheet('spring_crops', 'assets/Objects/Spring Crops.png', {
-      frameWidth: 32,
-      frameHeight: 32
-    });
-
-    // Load images
-    this.load.image('tileset_spring', 'assets/Tileset/Tileset Spring.png');
-    this.load.image('house', 'assets/Objects/House.png');
-    this.load.image('chest', 'assets/Objects/chest.png');
-    this.load.image('maple_tree', 'assets/Objects/Maple Tree.png');
-    this.load.image('interior', 'assets/Objects/Interior.png');
-    this.load.image('fence', 'assets/Objects/Fence\'s copiar.png');
-    this.load.image('road', 'assets/Objects/Road copiar.png');
-
-    // Load animal sprites
-    this.load.image('chicken_yellow', 'assets/Farm Animals/Baby Chicken Yellow.png');
-    this.load.image('chicken_blonde', 'assets/Farm Animals/Chicken Blonde  Green.png');
-    this.load.image('chicken_red', 'assets/Farm Animals/Chicken Red.png');
-    this.load.image('cow_female', 'assets/Farm Animals/Female Cow Brown.png');
-    this.load.image('cow_male', 'assets/Farm Animals/Male Cow Brown.png');
-
     // Create a simple tilemap for testing
     const mapData = this.createTestMap();
     this.cache.tilemap.add('test_map', { format: 1, data: mapData });
 
-    // Load additional UI assets (create simple colored rectangles as placeholders)
-    this.load.image('ui_panel', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==');
-    
     // Create pixel art cursor
     this.createPixelCursor();
+  }
+
+  private createPlayerSprites(): void {
+    // Create player idle sprite
+    const idleCanvas = document.createElement('canvas');
+    idleCanvas.width = 128; // 32x4 frames
+    idleCanvas.height = 32;
+    const idleCtx = idleCanvas.getContext('2d')!;
+    
+    // Draw 4 idle frames (down, left, right, up)
+    const colors = ['#4a90e2', '#4a90e2', '#4a90e2', '#4a90e2'];
+    for (let i = 0; i < 4; i++) {
+      idleCtx.fillStyle = colors[i];
+      idleCtx.fillRect(i * 32 + 8, 8, 16, 24); // Body
+      idleCtx.fillStyle = '#f5a623';
+      idleCtx.fillRect(i * 32 + 12, 4, 8, 8); // Head
+    }
+    
+    this.load.spritesheet('player_idle', idleCanvas.toDataURL(), {
+      frameWidth: 32,
+      frameHeight: 32
+    });
+
+    // Create player walk sprite
+    const walkCanvas = document.createElement('canvas');
+    walkCanvas.width = 512; // 32x16 frames (4 directions x 4 frames each)
+    walkCanvas.height = 32;
+    const walkCtx = walkCanvas.getContext('2d')!;
+    
+    // Draw 16 walk frames
+    for (let i = 0; i < 16; i++) {
+      const offset = (i % 4) * 2; // Simple animation offset
+      walkCtx.fillStyle = '#4a90e2';
+      walkCtx.fillRect(i * 32 + 8, 8 + offset, 16, 24 - offset); // Body
+      walkCtx.fillStyle = '#f5a623';
+      walkCtx.fillRect(i * 32 + 12, 4, 8, 8); // Head
+    }
+    
+    this.load.spritesheet('player_walk', walkCanvas.toDataURL(), {
+      frameWidth: 32,
+      frameHeight: 32
+    });
+  }
+
+  private createTilesetSprite(): void {
+    // Create a simple tileset
+    const tileCanvas = document.createElement('canvas');
+    tileCanvas.width = 320; // 10x10 tiles
+    tileCanvas.height = 320;
+    const tileCtx = tileCanvas.getContext('2d')!;
+    
+    // Create different tile types
+    const tileColors = [
+      '#000000', // 0 - black (unused)
+      '#7cb342', // 1 - grass
+      '#8d6e63', // 2 - dirt
+      '#4caf50', // 3 - dark grass
+      '#2196f3', // 4 - water
+      '#ff9800'  // 5 - sand
+    ];
+    
+    for (let y = 0; y < 10; y++) {
+      for (let x = 0; x < 10; x++) {
+        const tileIndex = (x + y * 10) % tileColors.length;
+        tileCtx.fillStyle = tileColors[tileIndex];
+        tileCtx.fillRect(x * 32, y * 32, 32, 32);
+        
+        // Add border for visibility
+        tileCtx.strokeStyle = '#333333';
+        tileCtx.lineWidth = 1;
+        tileCtx.strokeRect(x * 32, y * 32, 32, 32);
+      }
+    }
+    
+    this.load.image('tileset_spring', tileCanvas.toDataURL());
   }
 
   private createTestMap(): any {
@@ -153,25 +181,17 @@ export class PreloadScene extends Phaser.Scene {
     const mapHeight = 40;
     const tileSize = 32;
 
-    const layers = [{
-      name: 'ground',
-      width: mapWidth,
-      height: mapHeight,
-      data: [],
-      visible: true,
-      opacity: 1
-    }];
-
     // Fill with grass tiles (assuming tile index 1 is grass)
+    const data: number[] = [];
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
         // Create some variation in the ground
         if (x < 5 || x >= mapWidth - 5 || y < 5 || y >= mapHeight - 5) {
-          layers[0].data.push(2); // Border tiles
+          data.push(2); // Border tiles
         } else if ((x + y) % 7 === 0) {
-          layers[0].data.push(3); // Some variation
+          data.push(3); // Some variation
         } else {
-          layers[0].data.push(1); // Default grass
+          data.push(1); // Default grass
         }
       }
     }
@@ -181,7 +201,14 @@ export class PreloadScene extends Phaser.Scene {
       height: mapHeight,
       tilewidth: tileSize,
       tileheight: tileSize,
-      layers: layers,
+      layers: [{
+        name: 'ground',
+        width: mapWidth,
+        height: mapHeight,
+        data: data,
+        visible: true,
+        opacity: 1
+      }],
       tilesets: [{
         firstgid: 1,
         name: 'tileset_spring',
@@ -189,7 +216,7 @@ export class PreloadScene extends Phaser.Scene {
         tileheight: tileSize,
         tilecount: 100,
         columns: 10,
-        image: 'assets/Tileset/Tileset Spring.png',
+        image: 'tileset_spring',
         imagewidth: 320,
         imageheight: 320
       }]

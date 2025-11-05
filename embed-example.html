@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HarvestTown - Embedded Game Example</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.8;
+        }
+        
+        .game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #34495e;
+        }
+        
+        .game-frame {
+            border: 3px solid #2c3e50;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .controls {
+            background: #ecf0f1;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .control-section {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .control-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        .control-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .control-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .control-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .key {
+            background: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .game-container {
+                padding: 10px;
+            }
+            
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 HarvestTown</h1>
+            <p>A farming RPG adventure in your browser</p>
+        </div>
+        
+        <div class="game-container">
+            <div class="game-frame">
+                <!-- Replace this iframe src with your deployed game URL -->
+                <iframe 
+                    src="dist/index.html" 
+                    width="1024" 
+                    height="768"
+                    frameborder="0"
+                    title="HarvestTown Game">
+                    <p>Your browser doesn't support iframes. <a href="dist/index.html">Play the game directly</a>.</p>
+                </iframe>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-section">
+                <h3>🎮 Movement</h3>
+                <ul class="control-list">
+                    <li><span class="key">WASD</span> Move player</li>
+                    <li><span class="key">↑↓←→</span> Arrow keys</li>
+                    <li><span class="key">Gamepad</span> Left stick</li>
+                </ul>
+            </div>
+            
+            <div class="control-section">
+                <h3>⚡ Actions</h3>
+                <ul class="control-list">
+                    <li><span class="key">E</span> Interact</li>
+                    <li><span class="key">Space</span> Interact</li>
+                    <li><span class="key">Right Click</span> Use tool</li>
+                    <li><span class="key">Gamepad A</span> Interact</li>
+                </ul>
+            </div>
+            
+            <div class="control-section">
+                <h3>📷 Camera</h3>
+                <ul class="control-list">
+                    <li><span class="key">1</span> Zoom level 1</li>
+                    <li><span class="key">2</span> Zoom level 2</li>
+                    <li><span class="key">3</span> Zoom level 3</li>
+                    <li><span class="key">X</span> Camera shake test</li>
+                </ul>
+            </div>
+            
+            <div class="control-section">
+                <h3>🔧 Debug</h3>
+                <ul class="control-list">
+                    <li><span class="key">F3</span> Toggle debug info</li>
+                    <li>Shows FPS, position, velocity</li>
+                    <li>Performance monitoring</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Built with ❤️ using <a href="https://phaser.io/">Phaser 3</a> and TypeScript</p>
+            <p>🚀 <a href="DEPLOYMENT.md">Deploy your own</a> | 📋 <a href="PLAYTEST_CHECKLIST.md">Testing guide</a> | 📖 <a href="README.md">Documentation</a></p>
+        </div>
+    </div>
+</body>
+</html>

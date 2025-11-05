@@ -1,0 +1,89 @@
+{
+  "spritesheets": {
+    "player_idle": {
+      "key": "player_idle",
+      "path": "assets/Character/Idle.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "type": "spritesheet"
+    },
+    "player_walk": {
+      "key": "player_walk", 
+      "path": "assets/Character/Walk.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "type": "spritesheet"
+    },
+    "spring_crops": {
+      "key": "spring_crops",
+      "path": "assets/Objects/Spring Crops.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "type": "spritesheet"
+    }
+  },
+  "images": {
+    "tileset_spring": {
+      "key": "tileset_spring",
+      "path": "assets/Tileset/Tileset Spring.png",
+      "type": "image"
+    },
+    "house": {
+      "key": "house",
+      "path": "assets/Objects/House.png",
+      "type": "image"
+    },
+    "chest": {
+      "key": "chest",
+      "path": "assets/Objects/chest.png",
+      "type": "image"
+    },
+    "maple_tree": {
+      "key": "maple_tree",
+      "path": "assets/Objects/Maple Tree.png",
+      "type": "image"
+    },
+    "interior": {
+      "key": "interior",
+      "path": "assets/Objects/Interior.png",
+      "type": "image"
+    },
+    "fence": {
+      "key": "fence",
+      "path": "assets/Objects/Fence's copiar.png",
+      "type": "image"
+    },
+    "road": {
+      "key": "road",
+      "path": "assets/Objects/Road copiar.png",
+      "type": "image"
+    }
+  },
+  "animals": {
+    "chicken_yellow": {
+      "key": "chicken_yellow",
+      "path": "assets/Farm Animals/Baby Chicken Yellow.png",
+      "type": "image"
+    },
+    "chicken_blonde": {
+      "key": "chicken_blonde", 
+      "path": "assets/Farm Animals/Chicken Blonde  Green.png",
+      "type": "image"
+    },
+    "chicken_red": {
+      "key": "chicken_red",
+      "path": "assets/Farm Animals/Chicken Red.png",
+      "type": "image"
+    },
+    "cow_female": {
+      "key": "cow_female",
+      "path": "assets/Farm Animals/Female Cow Brown.png",
+      "type": "image"
+    },
+    "cow_male": {
+      "key": "cow_male",
+      "path": "assets/Farm Animals/Male Cow Brown.png",
+      "type": "image"
+    }
+  }
+}

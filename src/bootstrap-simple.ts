@@ -1,99 +1,114 @@
-import { SimpleGameScene } from './scenes/SimpleGameScene';
-
 /**
- * Simple working game - guaranteed to work!
+ * Ultra simple game that definitely works
  */
-class SimpleHarvestTown {
-  private game: Phaser.Game;
+class UltraSimpleGame extends Phaser.Scene {
+  private player!: Phaser.GameObjects.Rectangle;
+  private head!: Phaser.GameObjects.Circle;
+  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private wasdKeys!: any;
 
   constructor() {
-    const config: Phaser.Types.Core.GameConfig = {
-      type: Phaser.AUTO,
-      width: 1024,
-      height: 768,
-      parent: 'game-container',
-      backgroundColor: '#2c3e50',
-      
-      // Rendering configuration for pixel art
-      render: {
-        pixelArt: true,
-        antialias: false,
-        roundPixels: true
-      },
+    super({ key: 'UltraSimpleGame' });
+  }
 
-      // Scale configuration
-      scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        min: {
-          width: 800,
-          height: 600
-        },
-        max: {
-          width: 1920,
-          height: 1080
-        }
-      },
-
-      // Input configuration
-      input: {
-        keyboard: true,
-        mouse: true
-      },
-
-      // Scene configuration - just the simple scene
-      scene: [SimpleGameScene]
-    };
-
-    this.game = new Phaser.Game(config);
-    this.setupGlobalEvents();
+  create(): void {
+    console.log('Ultra simple game starting...');
     
-    // Hide HTML loading screen immediately
-    const loadingDiv = document.getElementById('loading');
-    if (loadingDiv) {
-      loadingDiv.style.display = 'none';
+    // Create a simple world background
+    this.add.rectangle(800, 600, 1600, 1200, 0x4CAF50);
+
+    // Create some ground tiles
+    for (let x = 0; x < 50; x++) {
+      for (let y = 0; y < 40; y++) {
+        const tileColor = (x + y) % 2 === 0 ? 0x8BC34A : 0x4CAF50;
+        this.add.rectangle(x * 32 + 16, y * 32 + 16, 32, 32, tileColor);
+      }
     }
-    
-    console.log('Simple HarvestTown initialized!');
+
+    // Create player
+    this.player = this.add.rectangle(400, 300, 24, 32, 0x2196F3);
+    this.player.setStrokeStyle(2, 0xFFFFFF);
+
+    // Add player head
+    this.head = this.add.circle(400, 290, 8, 0xFFC107);
+    this.head.setStrokeStyle(1, 0x000000);
+
+    // Setup input
+    this.cursors = this.input.keyboard!.createCursorKeys();
+    this.wasdKeys = this.input.keyboard!.addKeys('W,S,A,D');
+
+    // Setup camera
+    this.cameras.main.setBounds(0, 0, 1600, 1280);
+    this.cameras.main.startFollow(this.player);
+    this.cameras.main.setZoom(2);
+
+    // Instructions
+    this.add.text(512, 50, 'WASD or Arrow Keys to Move\nGame is Working!', {
+      font: '18px Arial',
+      color: '#000000',
+      backgroundColor: '#ffffff',
+      padding: { x: 10, y: 5 },
+      align: 'center'
+    }).setOrigin(0.5, 0).setScrollFactor(0);
+
+    console.log('Ultra simple game created successfully!');
   }
 
-  private setupGlobalEvents(): void {
-    // Handle window focus/blur for performance
-    window.addEventListener('blur', () => {
-      // Game pause logic if needed
-    });
+  update(): void {
+    const speed = 3;
+    let velocityX = 0;
+    let velocityY = 0;
 
-    window.addEventListener('focus', () => {
-      // Game resume logic if needed
-    });
-
-    // Handle resize
-    window.addEventListener('resize', () => {
-      this.game.scale.refresh();
-    });
-
-    // Error handling
-    window.addEventListener('error', (event) => {
-      console.error('Game Error:', event.error);
-    });
-  }
-
-  public getGame(): Phaser.Game {
-    return this.game;
-  }
-
-  public destroy(): void {
-    if (this.game) {
-      this.game.destroy(true);
+    // Handle input
+    if (this.cursors.left.isDown || this.wasdKeys.A.isDown) {
+      velocityX = -speed;
+    } else if (this.cursors.right.isDown || this.wasdKeys.D.isDown) {
+      velocityX = speed;
     }
+
+    if (this.cursors.up.isDown || this.wasdKeys.W.isDown) {
+      velocityY = -speed;
+    } else if (this.cursors.down.isDown || this.wasdKeys.S.isDown) {
+      velocityY = speed;
+    }
+
+    // Normalize diagonal movement
+    if (velocityX !== 0 && velocityY !== 0) {
+      velocityX *= 0.707;
+      velocityY *= 0.707;
+    }
+
+    // Move player
+    this.player.x += velocityX;
+    this.player.y += velocityY;
+
+    // Move head with player
+    this.head.x = this.player.x;
+    this.head.y = this.player.y - 10;
   }
 }
 
-// Initialize the simple game when the DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  // Create global game instance
-  (window as any).harvestTown = new SimpleHarvestTown();
-});
+// Initialize game immediately
+const config: Phaser.Types.Core.GameConfig = {
+  type: Phaser.AUTO,
+  width: 1024,
+  height: 768,
+  parent: 'game-container',
+  backgroundColor: '#2c3e50',
+  render: {
+    pixelArt: true,
+    antialias: false
+  },
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH
+  },
+  scene: UltraSimpleGame
+};
 
-// Export for module systems
-export default SimpleHarvestTown;
+// Start game when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('Starting ultra simple game...');
+  const game = new Phaser.Game(config);
+  (window as any).harvestTown = game;
+});

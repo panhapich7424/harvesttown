@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HarvestTown - Simple Working Version</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        #game-container {
+            border: 2px solid #34495e;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- No loading screen - game starts immediately -->
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+    <script>
+        // Simple working game - no modules, no TypeScript, just pure JavaScript
+        class SimpleGame extends Phaser.Scene {
+            constructor() {
+                super({ key: 'SimpleGame' });
+            }
+
+            create() {
+                console.log('Game starting...');
+                
+                // Create a simple world background
+                this.add.rectangle(800, 600, 1600, 1200, 0x4CAF50);
+
+                // Create some ground tiles
+                for (let x = 0; x < 50; x++) {
+                    for (let y = 0; y < 40; y++) {
+                        const tileColor = (x + y) % 2 === 0 ? 0x8BC34A : 0x4CAF50;
+                        this.add.rectangle(x * 32 + 16, y * 32 + 16, 32, 32, tileColor);
+                    }
+                }
+
+                // Create player
+                this.player = this.add.rectangle(400, 300, 24, 32, 0x2196F3);
+                this.player.setStrokeStyle(2, 0xFFFFFF);
+
+                // Add player head
+                this.head = this.add.circle(400, 290, 8, 0xFFC107);
+                this.head.setStrokeStyle(1, 0x000000);
+
+                // Setup input
+                this.cursors = this.input.keyboard.createCursorKeys();
+                this.wasdKeys = this.input.keyboard.addKeys('W,S,A,D');
+
+                // Setup camera
+                this.cameras.main.setBounds(0, 0, 1600, 1280);
+                this.cameras.main.startFollow(this.player);
+                this.cameras.main.setZoom(2);
+
+                // Instructions
+                this.add.text(512, 50, 'WASD or Arrow Keys to Move\nGame is Working!', {
+                    font: '18px Arial',
+                    color: '#000000',
+                    backgroundColor: '#ffffff',
+                    padding: { x: 10, y: 5 },
+                    align: 'center'
+                }).setOrigin(0.5, 0).setScrollFactor(0);
+
+                console.log('Game created successfully!');
+            }
+
+            update() {
+                const speed = 3;
+                let velocityX = 0;
+                let velocityY = 0;
+
+                // Handle input
+                if (this.cursors.left.isDown || this.wasdKeys.A.isDown) {
+                    velocityX = -speed;
+                } else if (this.cursors.right.isDown || this.wasdKeys.D.isDown) {
+                    velocityX = speed;
+                }
+
+                if (this.cursors.up.isDown || this.wasdKeys.W.isDown) {
+                    velocityY = -speed;
+                } else if (this.cursors.down.isDown || this.wasdKeys.S.isDown) {
+                    velocityY = speed;
+                }
+
+                // Normalize diagonal movement
+                if (velocityX !== 0 && velocityY !== 0) {
+                    velocityX *= 0.707;
+                    velocityY *= 0.707;
+                }
+
+                // Move player
+                this.player.x += velocityX;
+                this.player.y += velocityY;
+
+                // Move head with player
+                this.head.x = this.player.x;
+                this.head.y = this.player.y - 10;
+            }
+        }
+
+        // Initialize game
+        const config = {
+            type: Phaser.AUTO,
+            width: 1024,
+            height: 768,
+            parent: 'game-container',
+            backgroundColor: '#2c3e50',
+            render: {
+                pixelArt: true,
+                antialias: false
+            },
+            scale: {
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH
+            },
+            scene: SimpleGame
+        };
+
+        const game = new Phaser.Game(config);
+        console.log('Phaser game initialized!');
+    </script>
+</body>
+</html>
